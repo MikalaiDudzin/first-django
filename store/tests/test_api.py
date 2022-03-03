@@ -10,10 +10,18 @@ from store.serializers import BooksSerializer
 
 
 class BooksApiTestCase(APITestCase):
+
     # def setUP(self):
     #     self.book_1 = Book.objects.create(name='Test book 1', price=25.00, author_name='Author 1')
     #     self.book_2 = Book.objects.create(name='Test book 2', price=260.00, author_name='Author 5')
     #     self.book_3 = Book.objects.create(name='Test book 3 Author 1', price=100.00, author_name='Author 2')
+
+    def setUP(self):
+        self.user = User.objects.create_user(username='test_username')
+        self.book_1 = Book.objects.create(name='Test book 1', price=25.00, author_name='Author 1', owner=self.user)
+        self.book_2 = Book.objects.create(name='Test book 2', price=260.00, author_name='Author 5')
+        self.book_3 = Book.objects.create(name='Test book 3 Author 1', price=100.00, author_name='Author 2')
+
 
     def test_get(self):
         book_1 = Book.objects.create(name='Test book 1', price=25.00, author_name='Author 1')
@@ -41,6 +49,9 @@ class BooksApiTestCase(APITestCase):
         response = self.client.post(url, data=json_data, content_type='application/json')
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual(1, Book.objects.all().count())
+
+        print(Book.objects.last().owner)
+
 
     def test_update(self):
         self.book_4 = Book.objects.create(name='Test book 1', price=25.00, author_name='Author 1')
